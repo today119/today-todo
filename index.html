@@ -203,9 +203,16 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
 .upc{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:2px 0 8px;font-size:18px;color:#2a6fb0;background:#eef6ff;border-radius:14px;padding:8px 10px}
 .upc button{background:#fff;border-radius:99px;padding:3px 10px;font-size:17px;color:#2a6fb0;box-shadow:0 1px 3px #0001}
 .upc button b{color:#ff5d84}
-@media(max-width:430px){.date .d{font-size:30px}.nv{min-width:30px;height:30px;padding:0 6px}}
+
 .date .d small.wd{font-size:24px;margin-left:3px}
-.date .d{font-size:clamp(26px,8vw,36px)}
+.date .d{font-size:clamp(28px,8.5vw,38px)}
+/* 머리줄: 1줄=인사+버튼, 2줄=날짜 넘기기 (겹침 방지) */
+.top{display:grid;grid-template-columns:1fr auto auto auto auto;align-items:center;column-gap:6px;row-gap:4px}
+.top .date{display:contents}
+.top .date .hi{grid-row:1;grid-column:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .date .d{grid-row:2;grid-column:1/-1;gap:10px;margin-top:2px}
+.top .nv{height:42px;min-width:46px;border-radius:14px;font-size:19px}
+.top .nv.tdb{height:36px;min-width:0;font-size:17px;border-radius:12px;margin-left:auto;font-family:Gaegu}
 </style>
 </head>
 <body>
@@ -293,11 +300,11 @@ function render(){
   if(curDay!==today()){if(VD===curDay)VD=today();curDay=today()}
   ensureToday();save();
   const T=today(),isT=VD===T,fut=VD>T,d=pd(VD),L=dayList(VD);
-  $('#dTitle').innerHTML=`<button class="nv" id="dp">◀</button><span style="white-space:nowrap">${d.getMonth()+1}월 ${d.getDate()}일<small class="wd">(${DOW[d.getDay()]})</small></span><button class="nv" id="dn">▶</button>`;
+  $('#dTitle').innerHTML=`<button class="nv" id="dp">◀</button><span style="white-space:nowrap">${d.getMonth()+1}월 ${d.getDate()}일<small class="wd">(${DOW[d.getDay()]})</small></span><button class="nv" id="dn">▶</button>${VD!==today()?'<button class="nv tdb" id="dt">오늘로 ↩</button>':''}`;
   const h=new Date().getHours();
   const dd=Math.round((d-pd(T))/864e5);
   $('#hi').innerHTML=isT?(h<6?'늦은 밤이에요 🌙 푹 자요':h<11?'좋은 아침이에요 ☀️':h<14?'점심은 맛있게 먹었나요? 🍙':h<18?'오후도 힘내요 🍵':'오늘 하루 수고했어요 🌙')
-    :`<span class="vd ${fut?'f':'p'}">${fut?(dd===1?'📅 내일':'📅 '+dd+'일 뒤')+' · 미리 쓰기':(dd===-1?'⏪ 어제':'⏪ '+(-dd)+'일 전')+' 기록'}</span> <button class="nv tdb" id="dt">오늘로 ↩</button>`;
+    :`<span class="vd ${fut?'f':'p'}">${fut?(dd===1?'📅 내일':'📅 '+dd+'일 뒤'):(dd===-1?'⏪ 어제':'⏪ '+(-dd)+'일 전')+' 기록'}</span>`;
   $('#dp').onclick=()=>{VD=addDays(VD,-1);render()};$('#dn').onclick=()=>{VD=addDays(VD,1);render()};
   const dtb=$('#dt');if(dtb)dtb.onclick=()=>{VD=T;render()};
   document.querySelector('.paper h2').firstChild.textContent=isT?'📝 오늘 꼭! 할 일 ':`📝 ${md(VD)} 할 일 `;
@@ -573,7 +580,7 @@ function initSync(){const m=location.hash.match(/f=([a-z0-9]{10,16})/);let force
 }
 
 /* ---------- 새 버전 자동 반영 ---------- */
-const APPVER='20261017c';
+const APPVER='20261017d';
 let verBusy=false;
 async function checkVer(auto){if(verBusy)return;verBusy=true;try{const r=await fetch(location.pathname+'?vc='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPVER='([^']+)'/);
   if(m&&m[1]!==APPVER){if(auto&&($('#ov').classList.contains('on')||document.activeElement?.tagName==='INPUT'))return;await new Promise(r=>setTimeout(r,900));location.reload();return true}}catch(e){}finally{verBusy=false}return false}
