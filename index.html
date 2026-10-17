@@ -70,13 +70,14 @@ li .ic{font-size:26px;flex:none;width:32px;text-align:center}
 li .t{flex:1;min-width:0;position:relative;word-break:keep-all;overflow-wrap:anywhere;line-height:1.25;padding:4px 0;font-size:22px}
 li .t .st{color:#ff4d6d;font-size:17px;margin-right:2px;vertical-align:2px}
 li .t .rp{font-size:13px;color:#3f88c9;background:#e6f4ff;border-radius:99px;padding:0 6px;margin-left:4px;vertical-align:3px}
-li .more{width:34px;height:34px;border-radius:10px;color:#c9b6aa;font-size:20px;flex:none}
+li .more{height:34px;padding:0 9px;border-radius:99px;background:#f6eee8;color:#9a7a6c;font-size:16px;flex:none;white-space:nowrap}
+li.done .more{opacity:.6}
 li .t svg{position:absolute;left:-4px;top:50%;width:calc(100% + 8px);height:22px;margin-top:-11px;overflow:visible;pointer-events:none}
 li .t svg path{fill:none;stroke:#ff7b98;stroke-width:4.5;stroke-linecap:round;opacity:.85}
 li.done .t{color:#b9a69a}
 li.done .ck{background:#ff8fab;border-color:#ff8fab;color:#fff}
 li.done .ic{filter:grayscale(.6);opacity:.6}
-li .stamp{position:absolute;right:42px;top:50%;margin-top:-25px;width:50px;height:50px;border-radius:50%;border:3px solid #ff4d6d;color:#ff4d6d;font-family:"Gamja Flower";font-size:16px;line-height:1;display:grid;place-items:center;text-align:center;transform:rotate(-14deg);opacity:.85;background:#fff5f7cc;pointer-events:none}
+li .stamp{position:absolute;right:50px;top:50%;margin-top:-25px;width:50px;height:50px;border-radius:50%;border:3px solid #ff4d6d;color:#ff4d6d;font-family:"Gamja Flower";font-size:16px;line-height:1;display:grid;place-items:center;text-align:center;transform:rotate(-14deg);opacity:.85;background:#fff5f7cc;pointer-events:none}
 li .stamp.new{animation:stamp .45s cubic-bezier(.3,1.6,.5,1)}
 @keyframes stamp{0%{transform:rotate(-40deg) scale(2.6);opacity:0}100%{transform:rotate(-14deg) scale(1);opacity:.85}}
 .draw path{stroke-dasharray:400;stroke-dashoffset:400;animation:draw .45s ease-out forwards}
@@ -340,7 +341,7 @@ function render(){
   if(!$('#cpn').classList.contains('hide'))renderCp();
 }
 function itemHTML(x){const nw=justDone===x.id;
-  return `<li data-id="${x.id}" class="${x.done?'done':''} ${x.star?'star':''}"><button class="ck" aria-label="완료">${x.done?'✓':''}</button><span class="ic">${x.ic}</span><span class="t">${x.star?'<span class="st">★</span>':''}${esc(x.t)}${x.r?'<span class="rp">매일</span>':''}${x.done?`<span class="${nw?'draw':''}">${strike()}</span>`:''}</span>${x.done?`<span class="stamp ${nw?'new':''}">${x.stamp||'잘했<br>어요'}</span>`:''}<button class="more" aria-label="더보기">⋯</button></li>`}
+  return `<li data-id="${x.id}" class="${x.done?'done':''} ${x.star?'star':''}"><button class="ck" aria-label="완료">${x.done?'✓':''}</button><span class="ic">${x.ic}</span><span class="t">${x.star?'<span class="st">★</span>':''}${esc(x.t)}${x.r?'<span class="rp">매일</span>':''}${x.done?`<span class="${nw?'draw':''}">${strike()}</span>`:''}</span>${x.done?`<span class="stamp ${nw?'new':''}">${x.stamp||'잘했<br>어요'}</span>`:''}<button class="more" aria-label="고치기">${x.done?"✏️":"✏️ 고치기"}</button></li>`}
 function toggle(id,li){const L=dayList(VD);const x=L.find(y=>y.id===id);if(!x)return;
   x.done=!x.done;
   if(x.done){x.doneAt=Date.now();x.stamp=rnd(STAMP);justDone=id;
