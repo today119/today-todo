@@ -111,7 +111,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .dayv{margin-top:10px;background:#fffaf4;border-radius:16px;padding:10px 12px;font-size:19px}
 .dayv div{padding:2px 0}
 /* sheet */
-.ov{position:fixed;inset:0;background:#4d3b3366;display:none;align-items:flex-end;justify-content:center;z-index:80}
+.ov{position:fixed;inset:0;background:#4d3b3366;display:none;align-items:flex-end;justify-content:center;z-index:95}
 .ov.on{display:flex}
 .sheet{background:#fffdf8;width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:28px 28px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));animation:up .22s ease-out}
 @media(min-width:700px){.ov{align-items:center}.sheet{border-radius:28px}}
@@ -138,6 +138,37 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .sw input{width:22px;height:22px;accent-color:#ff8fab}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:#4d3b33;color:#fff;padding:11px 20px;border-radius:99px;z-index:99;transition:.3s;white-space:nowrap;font-size:19px}
 .toast.on{transform:translateX(-50%) translateY(0)}
+/* coupon */
+.cpa{display:flex;align-items:center;gap:8px;width:100%;margin:4px 0 8px;padding:10px 12px;border-radius:16px;background:#fff0f3;border:2.5px solid #ff8fab;color:#d94b72;font-size:20px;text-align:left;animation:wig 2.4s ease-in-out infinite}
+.cpa b{background:#ff5d84;color:#fff;border-radius:99px;padding:0 9px;font-size:17px}
+@keyframes wig{0%,88%,100%{transform:none}92%{transform:rotate(-1.2deg)}96%{transform:rotate(1.2deg)}}
+.ib .bd{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;border-radius:99px;background:#ff5d84;color:#fff;font-size:13px;display:grid;place-items:center;padding:0 4px}
+.ib{position:relative}
+.cpn{background:#fff;border-radius:26px;padding:14px;box-shadow:0 4px 14px #ebcfb855;margin-top:18px}
+.cpn h2{font-family:'Gamja Flower';font-weight:400;font-size:30px;margin:0 0 8px;display:flex;align-items:center;gap:6px}
+.cpn h2 .addc{margin-left:auto;font-family:'Gaegu';font-weight:700;font-size:19px;padding:7px 14px;border-radius:99px;background:linear-gradient(135deg,#ff9db3,#ff7898);color:#fff}
+.cc{display:flex;align-items:center;gap:10px;width:100%;padding:9px;margin:7px 0;border-radius:18px;background:#fffaf4;border:2px dashed #f0dcc8;text-align:left;position:relative}
+.cc .th{width:58px;height:58px;border-radius:12px;flex:none;background:#f6eee8 center/cover;display:grid;place-items:center;font-size:30px}
+.cc .ci{flex:1;min-width:0}
+.cc .cn{font-size:21px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc .cs{font-size:16px;color:var(--sub)}
+.dday{flex:none;font-size:18px;padding:3px 10px;border-radius:99px;background:#e9f7ee;color:#3a9a5c}
+.dday.d7{background:#fff4d6;color:#c08400}.dday.d3{background:#ffe3ea;color:#e0456c}.dday.d0{background:#ff5d84;color:#fff}.dday.ex{background:#eee;color:#999}
+.cc.d3,.cc.d0{border-color:#ff9db3;background:#fff4f6}
+.cc.used,.cc.exp{opacity:.55}
+.cc .us{position:absolute;right:62px;top:50%;transform:translateY(-50%) rotate(-14deg);border:3px solid #ff5d84;color:#ff5d84;border-radius:10px;padding:0 6px;font-size:17px;background:#fff8}
+.cpn details summary{font-size:18px;color:var(--sub);margin-top:8px}
+.ph{display:block;width:100%;min-height:120px;border-radius:16px;border:2.5px dashed #f0d2c2;background:#fffaf4 center/contain no-repeat;color:var(--sub);font-size:19px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chips button{padding:5px 11px;border-radius:99px;background:#f6eee8;font-size:17px}
+.vw{position:fixed;inset:0;z-index:90;background:#fff;display:none;flex-direction:column;align-items:center;padding:14px 14px calc(16px + env(safe-area-inset-bottom));overflow:auto}
+.vw.on{display:flex}
+.vw .vh{width:100%;max-width:560px;display:flex;align-items:center;gap:8px}
+.vw .vh b{flex:1;font-family:'Gamja Flower';font-weight:400;font-size:28px;line-height:1.1}
+.vw img{width:100%;max-width:560px;margin:10px 0;border-radius:12px;box-shadow:0 2px 10px #0002}
+.vw .noimg{margin:30px 0;font-size:70px}
+.vw .vi{width:100%;max-width:560px;font-size:20px;line-height:1.5}
+.vw .btns{width:100%;max-width:560px}
 .hide{display:none!important}
 .ptabs{display:flex;gap:6px;margin:0 0 10px}
 .ptabs button{flex:1;padding:9px 0;border-radius:14px;background:#f7efe8;font-size:19px;color:#a08c80}
@@ -175,6 +206,7 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
   <div class="top">
     <div class="date"><div class="d" id="dTitle"></div><div class="hi" id="hi"></div></div>
     <button class="ib cloud" id="cloud" title="온라인 저장">☁️</button>
+    <button class="ib" id="cpBtn" title="쿠폰함">🎟️</button>
     <button class="ib" id="calBtn" title="달력">📅</button>
     <button class="ib" id="setBtn" title="설정">⚙️</button>
   </div>
@@ -192,15 +224,19 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
       <button type="button" class="tg rp" id="rpT" title="매일">🔁매일</button>
       <button class="addb">+</button>
     </form>
+    <button class="cpa hide" id="cpa"></button>
     <button class="carry hide" id="carry"></button>
     <div class="upc hide" id="upc"></div>
     <ul id="list"></ul>
   </div>
   <div class="cal hide" id="cal"></div>
+  <div class="cpn hide" id="cpn"></div>
 </div>
 <div class="clear" id="clear"><div class="fl">🌸</div><h1>오늘 미션 클리어!</h1><p id="clearP"></p><button id="clearB">고마워 🥰</button></div>
 <div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
+<div class="vw" id="vw"></div>
 <div class="toast" id="toast"></div>
+<input type="file" id="cfile" accept="image/*" class="hide">
 
 <script>
 const KEY='today_todo_v1';
@@ -231,7 +267,8 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.days)return s}catch(e){}return {days:{},routines:[],sound:true}}
 let S=load();
 let star=false,rp=false,addPl=null,calYM=null,calSel=null,curDay=today(),VD=today();
-const dataStr=()=>JSON.stringify({days:S.days,routines:S.routines});
+if(!S.coupons)S.coupons=[];
+const dataStr=()=>JSON.stringify({days:S.days,routines:S.routines,coupons:S.coupons});
 function save(){const d=dataStr();if(d!==S.lastD){S.lastD=d;S.at=Date.now();queuePush()}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1900)}
 
@@ -292,7 +329,9 @@ function render(){
     li.querySelector('.ck').onclick=()=>toggle(id,li);
     li.querySelector('.t').onclick=()=>toggle(id,li);
     li.querySelector('.more').onclick=e=>{e.stopPropagation();openItem(id)}});
+  renderCpAlert();
   if(!$('#cal').classList.contains('hide'))renderCal();
+  if(!$('#cpn').classList.contains('hide'))renderCp();
 }
 function itemHTML(x){const nw=justDone===x.id;
   return `<li data-id="${x.id}" class="${x.done?'done':''} ${x.star?'star':''}"><button class="ck" aria-label="완료">${x.done?'✓':''}</button><span class="ic">${x.ic}</span><span class="t">${x.star?'<span class="st">★</span>':''}${esc(x.t)}${x.r?'<span class="rp">매일</span>':''}${x.done?`<span class="${nw?'draw':''}">${strike()}</span>`:''}</span>${x.done?`<span class="stamp ${nw?'new':''}">${x.stamp||'잘했<br>어요'}</span>`:''}<button class="more" aria-label="더보기">⋯</button></li>`}
@@ -393,6 +432,84 @@ function renderCal(){const n=new Date();if(!calYM)calYM=[n.getFullYear(),n.getMo
   const gd=$('#goD');if(gd)gd.onclick=()=>{VD=calSel;render();scrollTo({top:0,behavior:'smooth'});setTimeout(()=>$('#addI').focus(),400)};
 }
 
+
+/* ---------- 쿠폰함 ---------- */
+const IMGDB='https://matchmaker-28187-default-rtdb.asia-southeast1.firebasedatabase.app/today_todo_img/';
+const CKW=[[/스타벅스|커피|카페|메가|투썸|이디야|빽다방|컴포즈|아메리카노|라떼/,'☕'],[/치킨|bhc|bbq|교촌|굽네/i,'🍗'],[/피자/,'🍕'],[/버거|맥도날드|롯데리아|맘스터치/,'🍔'],[/케이크|베이커리|빵|파리바게뜨|뚜레쥬르/,'🍰'],[/아이스크림|배스킨|베라/,'🍦'],[/영화|cgv|메가박스|롯데시네마/i,'🎬'],[/편의점|gs25|cu|세븐/i,'🏪'],[/배민|배달|요기요|쿠팡이츠/,'🛵'],[/주유|기름/,'⛽'],[/상품권|문화|도서|해피머니|컬처/,'💳'],[/올리브영|화장품/,'💄'],[/마트|이마트|홈플러스|쿠팡/,'🛒'],[/떡볶이|분식|김밥/,'🍢'],[/음료|주스|버블티|공차/,'🧋']];
+const cIcon=t=>{for(const[r,e]of CKW)if(r.test(t))return e;return '🎟️'};
+const SHOPS=['카톡 선물하기','쿠팡','네이버','편의점','스타벅스','배민','문자 받음'];
+const dLeft=k=>Math.round((pd(k)-pd(today()))/864e5);
+function dBadge(c){if(c.used)return '<span class="dday ex">다 씀</span>';if(!c.exp)return '<span class="dday">기한 없음</span>';const n=dLeft(c.exp);
+  return n<0?'<span class="dday ex">기간 지남</span>':`<span class="dday ${n===0?'d0':n<=3?'d3':n<=7?'d7':''}">${n===0?'오늘까지!':'D-'+n}</span>`}
+const cCls=c=>{if(c.used)return 'used';if(!c.exp)return '';const n=dLeft(c.exp);return n<0?'exp':n===0?'d0':n<=3?'d3':''};
+const soonCp=()=>S.coupons.filter(c=>!c.used&&c.exp&&dLeft(c.exp)>=0&&dLeft(c.exp)<=7).sort((a,b)=>a.exp<b.exp?-1:1);
+function renderCpAlert(){const a=$('#cpa'),so=soonCp(),T=today();
+  const b=$('#cpBtn');b.innerHTML='🎟️'+(so.length?`<span class="bd">${so.length}</span>`:'');
+  if(VD!==T||!so.length){a.classList.add('hide');return}
+  const f=so[0],n=dLeft(f.exp);a.classList.remove('hide');
+  a.innerHTML=`<span style="font-size:26px">⏰</span><span style="flex:1">쿠폰 곧 끝나요! <span style="font-size:17px">${f.ic||'🎟️'} ${esc(f.name)} ${n===0?'<b>오늘까지</b>':'<b>D-'+n+'</b>'}${so.length>1?' 외 '+(so.length-1)+'장':''}</span></span><span style="font-size:17px">보기 ›</span>`;
+  a.onclick=()=>so.length===1?openView(f.id):showCp()}
+function showCp(){const c=$('#cpn');c.classList.remove('hide');renderCp();c.scrollIntoView({behavior:'smooth'})}
+$('#cpBtn').onclick=()=>{const c=$('#cpn');if(c.classList.contains('hide'))showCp();else c.classList.add('hide')};
+function cpCard(c){return `<button class="cc ${cCls(c)}" data-cv="${c.id}"><span class="th" ${c.th?`style="background-image:url(${c.th})"`:''}>${c.th?'':c.ic||'🎟️'}</span><span class="ci"><div class="cn">${c.th?(c.ic||'')+' ':''}${esc(c.name)}</div><div class="cs">${c.shop?'🛍️ '+esc(c.shop)+' · ':''}${c.exp?'~'+md(c.exp):''}</div></span>${c.used?'<span class="us">사용 완료</span>':''}${dBadge(c)}</button>`}
+function renderCp(){const live=S.coupons.filter(c=>!c.used&&(!c.exp||dLeft(c.exp)>=0)).sort((a,b)=>(a.exp||'9')<(b.exp||'9')?-1:1);
+  const used=S.coupons.filter(c=>c.used).sort((a,b)=>(b.usedAt||0)-(a.usedAt||0)),ex=S.coupons.filter(c=>!c.used&&c.exp&&dLeft(c.exp)<0).sort((a,b)=>a.exp<b.exp?1:-1);
+  $('#cpn').innerHTML=`<h2>🎟️ 쿠폰함 <span style="font-family:Gaegu;font-size:18px;color:var(--sub)">${live.length}장</span><button class="addc" id="cAdd">+ 쿠폰 넣기</button></h2>`+
+   (live.length?live.map(cpCard).join(''):'<div class="empty">쿠폰을 넣어 두면 끝나기 전에 알려줄게요 ⏰</div>')+
+   (ex.length?`<details><summary>⌛ 기간 지난 쿠폰 ${ex.length}장</summary>${ex.map(cpCard).join('')}</details>`:'')+
+   (used.length?`<details><summary>✅ 다 쓴 쿠폰 ${used.length}장</summary>${used.map(cpCard).join('')}</details>`:'');
+  $('#cAdd').onclick=()=>openCp();
+  document.querySelectorAll('[data-cv]').forEach(b=>b.onclick=()=>openView(b.dataset.cv))}
+/* 사진 */
+const IDB=new Promise(r=>{try{const q=indexedDB.open('today_todo_img',1);q.onupgradeneeded=()=>q.result.createObjectStore('img');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
+async function idbGet(k){const d=await IDB;if(!d)return null;return new Promise(r=>{try{const q=d.transaction('img').objectStore('img').get(k);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null)}catch(e){r(null)}})}
+async function idbPut(k,v){const d=await IDB;if(!d)return;try{d.transaction('img','readwrite').objectStore('img').put(v,k)}catch(e){}}
+async function idbDel(k){const d=await IDB;if(!d)return;try{d.transaction('img','readwrite').objectStore('img').delete(k)}catch(e){}}
+async function getImg(id){let v=await idbGet(id);if(v)return v;try{const r=await fetch(IMGDB+S.code+'/'+id+'.json');v=await r.json();if(v){idbPut(id,v);return v}}catch(e){}return null}
+async function putImg(id,v){await idbPut(id,v);for(let i=0;i<3;i++){try{const r=await fetch(IMGDB+S.code+'/'+id+'.json',{method:'PUT',body:JSON.stringify(v)});if(r.ok)return true}catch(e){}}toast('⚠️ 사진 올리기 실패 · 인터넷 확인');return false}
+function delImg(id){idbDel(id);fetch(IMGDB+S.code+'/'+id+'.json',{method:'DELETE'}).catch(()=>{})}
+function shrink(file,max,q){return new Promise((ok,no)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{let w=im.naturalWidth,h=im.naturalHeight;const k=Math.min(1,max/Math.max(w,h));w=Math.round(w*k);h=Math.round(h*k);
+  const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',q))};im.onerror=()=>no();im.src=u})}
+function openCp(id){const o=id?S.coupons.find(c=>c.id===id):null;
+  let f={name:o?.name||'',shop:o?.shop||'',exp:o?.exp||'',memo:o?.memo||'',big:null,th:o?.th||'',img:o?.img||''},busy=false;
+  const sync=()=>{f.name=$('#cnm').value;f.shop=$('#csh').value;f.exp=$('#cex').value;f.memo=$('#cmm').value};
+  const draw=()=>{openSheet(`<h3>${o?'✏️ 쿠폰 고치기':'🎟️ 쿠폰 넣기'}<button class="x">✕</button></h3>
+    <button class="ph" id="cph" style="${f.th||f.big?`background-image:url(${f.big||f.th});min-height:180px`:''}">${f.th||f.big?'':'📸 쿠폰 사진 넣기<br><span class="note">바코드 캡처를 골라요</span>'}</button>
+    ${f.th||f.big?'<div class="chips"><button id="cpc">📸 사진 바꾸기</button><button id="cpx">사진 빼기</button></div>':''}
+    <div class="lbl">쿠폰 이름</div><input class="inp" id="cnm" maxlength="40" placeholder="예) 스타벅스 아메리카노" value="${esc(f.name)}">
+    <div class="lbl">🛍️ 구매처 · 받은 곳</div><input class="inp" id="csh" maxlength="30" placeholder="예) 카톡 선물하기" value="${esc(f.shop)}">
+    <div class="chips">${SHOPS.map(x=>`<button data-sh="${x}">${x}</button>`).join('')}</div>
+    <div class="lbl">⏰ 유효기간 (이 날까지)</div><input type="date" class="inp" id="cex" value="${f.exp}">
+    <div class="chips">${[['+30일',30],['+90일',90],['+1년',365]].map(([l,n])=>`<button data-ex="${n}">${l}</button>`).join('')}</div>
+    <div class="lbl">메모</div><input class="inp" id="cmm" maxlength="60" placeholder="예) 2만원권, 잔액 5천원" value="${esc(f.memo)}">
+    <div class="btns">${o?'<button class="del" id="cdl">🗑️ 지우기</button>':''}<button class="pri" id="cok">저장</button></div>`);
+    const pick=()=>{sync();const i=$('#cfile');i.value='';i.onchange=async()=>{const fl=i.files[0];if(!fl)return;try{f.big=await shrink(fl,1100,.85);f.th=await shrink(fl,180,.7);draw()}catch(e){toast('사진을 못 읽었어요')}};i.click()};
+    $('#cph').onclick=pick;const pc=$('#cpc');if(pc)pc.onclick=pick;
+    const px=$('#cpx');if(px)px.onclick=()=>{sync();f.big=null;f.th='';draw()};
+    document.querySelectorAll('[data-sh]').forEach(b=>b.onclick=()=>{$('#csh').value=b.dataset.sh});
+    document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{$('#cex').value=addDays(today(),+b.dataset.ex)});
+    if(o)$('#cdl').onclick=()=>{if(o.img)delImg(o.img);S.coupons=S.coupons.filter(c=>c.id!==o.id);closeSheet();closeView();render();toast('쿠폰을 지웠어요')};
+    $('#cok').onclick=async()=>{if(busy)return;sync();const nm=f.name.trim();if(!nm){toast('쿠폰 이름을 써 주세요');$('#cnm').focus();return}
+      busy=true;$('#cok').textContent='저장 중…';
+      let img=f.img;if(f.big){const nid=uid();await putImg(nid,f.big);if(img)delImg(img);img=nid}else if(!f.th&&img){delImg(img);img=''}
+      const c=o||{id:uid(),at:Date.now()};Object.assign(c,{name:nm,shop:f.shop.trim(),exp:f.exp,memo:f.memo.trim(),th:f.th,img,ic:cIcon(nm+' '+f.shop)});
+      if(!o)S.coupons.push(c);closeSheet();$('#cpn').classList.remove('hide');render();
+      if(o&&$('#vw').classList.contains('on'))openView(c.id);
+      toast(c.exp?`🎟️ ${md(c.exp)}까지! 끝나기 전에 알려줄게요`:'🎟️ 쿠폰함에 넣었어요');snd('add')};
+  };draw()}
+function closeView(){$('#vw').classList.remove('on')}
+async function openView(id){const c=S.coupons.find(x=>x.id===id);if(!c)return;const v=$('#vw');
+  const n=c.exp?dLeft(c.exp):null;
+  v.innerHTML=`<div class="vh"><b>${c.ic||'🎟️'} ${esc(c.name)}</b>${dBadge(c)}<button class="ib" id="vx">✕</button></div>
+   ${c.img||c.th?`<img id="vimg" src="${c.th}" alt="">`:`<div class="noimg">${c.ic||'🎟️'}</div>`}
+   <div class="vi">${c.shop?`🛍️ ${esc(c.shop)}<br>`:''}${c.exp?`⏰ ${pd(c.exp).getFullYear()}년 ${md(c.exp)}까지 ${n>=0&&!c.used?`<span class="note">(${n===0?'오늘이 마지막 날!':n+'일 남음'})</span>`:''}<br>`:''}${c.memo?`📝 ${esc(c.memo)}`:''}${c.used?`<br>✅ ${new Date(c.usedAt).getMonth()+1}/${new Date(c.usedAt).getDate()} 사용 완료`:''}</div>
+   <div class="btns"><button id="ved">✏️ 고치기</button><button class="pri" id="vus">${c.used?'↩️ 안 쓴 걸로':'✅ 사용 완료!'}</button></div>`;
+  v.classList.add('on');v.scrollTop=0;
+  $('#vx').onclick=closeView;$('#ved').onclick=()=>openCp(c.id);
+  $('#vus').onclick=e=>{c.used=!c.used;c.usedAt=c.used?Date.now():0;closeView();render();
+    if(c.used){snd('pop');burst(innerWidth/2,innerHeight*.6,40);praise('알뜰하게 썼어요! 💰')}};
+  if(c.img){const im=await getImg(c.img);const el=$('#vimg');if(el&&im)el.src=im;else if(el&&!im)toast('사진을 불러오는 중이에요… 인터넷 확인')}}
+
 /* ---------- 설정 ---------- */
 function openSet(){const draw=()=>{openSheet(`<h3>⚙️ 설정<button class="x">✕</button></h3>
   <div class="lbl">🔁 매일 할 일 <span class="note">(아침마다 저절로 들어가요)</span></div>
@@ -420,8 +537,8 @@ async function push(){try{const r=await fetch(DB+S.code+'.json',{method:'PUT',bo
 async function pull(force){if(!S.code||pulling)return;pulling=true;
   try{const r=await fetch(DB+S.code+'.json?x='+Date.now());if(!r.ok)throw 0;const j=await r.json();
     if(force===true&&(S.at||0)>initAt)force=false;
-    if(j&&j.d&&(force||j.at>(S.at||0))){const d=JSON.parse(j.d);S.days=d.days||{};S.routines=d.routines||[];S.lastD=j.d;S.at=j.at;
-      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(!$('#ov').classList.contains('on'))render();setCloud('ok');return 'got'}
+    if(j&&j.d&&(force||j.at>(S.at||0))){const d=JSON.parse(j.d);S.days=d.days||{};S.routines=d.routines||[];S.coupons=d.coupons||[];S.lastD=j.d;S.at=j.at;
+      try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(!$('#ov').classList.contains('on')&&!$('#vw').classList.contains('on'))render();setCloud('ok');return 'got'}
     if(!j||!j.d||j.at<(S.at||0)){await push();return 'pushed'}
     setCloud('ok')}catch(e){setCloud('off')}finally{pulling=false}}
 async function shareLink(){const u=shareURL();
@@ -436,7 +553,7 @@ function initSync(){const m=location.hash.match(/f=([a-z0-9]{10,16})/);let force
   addEventListener('focus',()=>pull());
   setInterval(()=>{if(!document.hidden){pull();if(curDay!==today())render()}},30000);
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();$('#clear').classList.remove('on')}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closeView();$('#clear').classList.remove('on')}});
 render();
 initSync();
 </script>
