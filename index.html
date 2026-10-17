@@ -437,7 +437,7 @@ function renderCal(){const n=new Date();if(!calYM)calYM=[n.getFullYear(),n.getMo
 const IMGDB='https://matchmaker-28187-default-rtdb.asia-southeast1.firebasedatabase.app/today_todo_img/';
 const CKW=[[/스타벅스|커피|카페|메가|투썸|이디야|빽다방|컴포즈|아메리카노|라떼/,'☕'],[/치킨|bhc|bbq|교촌|굽네/i,'🍗'],[/피자/,'🍕'],[/버거|맥도날드|롯데리아|맘스터치/,'🍔'],[/케이크|베이커리|빵|파리바게뜨|뚜레쥬르/,'🍰'],[/아이스크림|배스킨|베라/,'🍦'],[/영화|cgv|메가박스|롯데시네마/i,'🎬'],[/편의점|gs25|cu|세븐/i,'🏪'],[/배민|배달|요기요|쿠팡이츠/,'🛵'],[/주유|기름/,'⛽'],[/상품권|문화|도서|해피머니|컬처/,'💳'],[/올리브영|화장품/,'💄'],[/마트|이마트|홈플러스|쿠팡/,'🛒'],[/떡볶이|분식|김밥/,'🍢'],[/음료|주스|버블티|공차/,'🧋']];
 const cIcon=t=>{for(const[r,e]of CKW)if(r.test(t))return e;return '🎟️'};
-const SHOPS=['카톡 선물하기','쿠팡','네이버','편의점','스타벅스','배민','문자 받음'];
+const SHOPS=['카톡 선물하기','쿠팡','네이버','롯데온','11번가','편의점','스타벅스','배민','문자 받음'];
 const dLeft=k=>Math.round((pd(k)-pd(today()))/864e5);
 function dBadge(c){if(c.used)return '<span class="dday ex">다 씀</span>';if(!c.exp)return '<span class="dday">기한 없음</span>';const n=dLeft(c.exp);
   return n<0?'<span class="dday ex">기간 지남</span>':`<span class="dday ${n===0?'d0':n<=3?'d3':n<=7?'d7':''}">${n===0?'오늘까지!':'D-'+n}</span>`}
