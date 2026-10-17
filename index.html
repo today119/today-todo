@@ -254,6 +254,7 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
 <input type="file" id="cfile" accept="image/*" class="hide">
 
 <script>
+window.addEventListener('error',e=>{try{const b=document.createElement('div');b.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:999;background:#fff0f0;border:2px solid #f66;border-radius:12px;padding:8px;font:14px sans-serif;color:#c00';b.textContent='⚠️ 오류: '+e.message+' ('+(e.lineno||'')+') — 이 화면을 캡처해서 보내주세요';b.onclick=()=>b.remove();document.body.appendChild(b)}catch(_){}});
 const KEY='today_todo_v1';
 const DB='https://matchmaker-28187-default-rtdb.asia-southeast1.firebasedatabase.app/today_todo/';
 const DOW='일월화수목금토';
@@ -580,7 +581,7 @@ function initSync(){const m=location.hash.match(/f=([a-z0-9]{10,16})/);let force
 }
 
 /* ---------- 새 버전 자동 반영 ---------- */
-const APPVER='20261017d';
+const APPVER='20261018a';
 let verBusy=false;
 async function checkVer(auto){if(verBusy)return;verBusy=true;try{const r=await fetch(location.pathname+'?vc='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPVER='([^']+)'/);
   if(m&&m[1]!==APPVER){if(auto&&($('#ov').classList.contains('on')||document.activeElement?.tagName==='INPUT'))return;await new Promise(r=>setTimeout(r,900));location.reload();return true}}catch(e){}finally{verBusy=false}return false}
