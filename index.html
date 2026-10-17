@@ -526,6 +526,7 @@ function openSet(){const draw=()=>{openSheet(`<h3>⚙️ 설정<button class="x"
    <b>아이폰</b>: 사파리 아래 <b>공유 버튼(⬆️)</b> → <b>「홈 화면에 추가」</b><br>
    <b>갤럭시</b>: 크롬/삼성인터넷 <b>⋮ 메뉴</b> → <b>「홈 화면에 추가」</b> (또는 「앱 설치」)<br>
    <span class="note">📝 「오늘 할 일」 메모 아이콘이 생기고, 카톡이랑 따로 열려서 왔다 갔다 편해요. 메모는 같은 내 코드로 그대로 보여요.</span></div>
+  <div class="btns"><button id="rld">🔄 새로고침 (최신 버전 받기)</button></div>
   <div class="lbl">🔔 소리</div><label class="sw"><input type="checkbox" id="snd" ${S.sound?'checked':''}> 완료할 때 뿅 소리</label>
   <div class="lbl">☁️ 온라인 저장 · 내 링크</div>
   <div class="share">메모는 <b>온라인에 저장</b>돼요. 아래 <b>내 링크</b>로 열면 카톡·사파리·다른 폰 어디서든 같은 메모가 보여요.<br>
@@ -535,6 +536,7 @@ function openSet(){const draw=()=>{openSheet(`<h3>⚙️ 설정<button class="x"
   document.querySelectorAll('[data-rd]').forEach(b=>b.onclick=()=>{const id=b.dataset.rd;S.routines=S.routines.filter(r=>r.id!==id);S.days[today()]=dayList(today()).filter(x=>!(x.r===id&&!x.done));render();draw()});
   $('#snd').onchange=e=>{S.sound=e.target.checked;save()};
   $('#shr').onclick=shareLink;
+    $('#rld').onclick=hardReload;
   const ex=$('#ext');if(ex)ex.onclick=()=>{const u=shareURL();location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(u)};
   $('#cgo').onclick=()=>{const v=$('#cin').value.trim().toLowerCase();if(!/^[a-z0-9]{10,16}$/.test(v)){toast('코드를 확인해 주세요');return}S.code=v;history.replaceState(null,'',shareURL());pull('hard').then(r=>{toast(r==='got'?'☁️ 불러왔어요!':'이 코드엔 메모가 없어서 지금 메모를 올렸어요');closeSheet()})};
 };draw()}
@@ -568,6 +570,15 @@ function initSync(){const m=location.hash.match(/f=([a-z0-9]{10,16})/);let force
   addEventListener('focus',()=>pull());
   setInterval(()=>{if(!document.hidden){pull();if(curDay!==today())render()}},30000);
 }
+
+/* ---------- 새 버전 자동 반영 ---------- */
+const APPVER='20261017b';
+let verBusy=false;
+async function checkVer(auto){if(verBusy)return;verBusy=true;try{const r=await fetch(location.pathname+'?vc='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPVER='([^']+)'/);
+  if(m&&m[1]!==APPVER){if(auto&&($('#ov').classList.contains('on')||document.activeElement?.tagName==='INPUT'))return;await new Promise(r=>setTimeout(r,900));location.reload();return true}}catch(e){}finally{verBusy=false}return false}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkVer(true)});
+setInterval(()=>{if(!document.hidden)checkVer(true)},300000);
+function hardReload(){toast('🔄 새로 불러오는 중…');setTimeout(()=>location.reload(),500)}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closeView();$('#clear').classList.remove('on')}});
 render();
 initSync();
