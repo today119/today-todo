@@ -549,7 +549,7 @@ function renderTT(){const a=$('#tta'),w=wkOf(VD),t=ttFor(VD),thisW=w===wkOf(toda
     :`<span style="font-size:24px">📸</span><span style="flex:1">${thisW?'이번 주':md(w)+' 주'} 시간표 사진 넣기<small>매주 바뀐 시간표를 찍어 넣어요</small></span>`;
   a.onclick=()=>t?openTT(w):pickTT(w)}
 function pickTT(w){const i=$('#cfile');i.value='';i.onchange=async()=>{const fl=i.files[0];if(!fl)return;toast('📸 시간표 넣는 중…');
-  try{const big=await shrink(fl,1600,.85),th=await shrink(fl,240,.7),nid=uid();
+  try{let big=await shrink(fl,1600,.85);for(const[m,q]of[[1600,.7],[1400,.7],[1200,.65],[1000,.6]]){if(big.length<680000)break;big=await shrink(fl,m,q)}const th=await shrink(fl,240,.7),nid=uid();
     if(!await putImg(nid,big))return;
     const o=S.tt.find(x=>x.wk===w);if(o){delImg(o.img);Object.assign(o,{img:nid,th,at:Date.now()})}else S.tt.push({id:uid(),wk:w,img:nid,th,at:Date.now()});
     S.tt.sort((a,b)=>a.wk<b.wk?-1:1);while(S.tt.length>12){const x=S.tt.shift();delImg(x.img)}
@@ -621,7 +621,7 @@ function initSync(){const m=location.hash.match(/f=([a-z0-9]{10,16})/);let force
 }
 
 /* ---------- 새 버전 자동 반영 ---------- */
-const APPVER='20261019a';
+const APPVER='20261019b';
 let verBusy=false;
 async function checkVer(auto){if(verBusy)return;verBusy=true;try{const r=await fetch(location.pathname+'?vc='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPVER='([^']+)'/);
   if(m&&m[1]!==APPVER){if(auto&&($('#ov').classList.contains('on')||document.activeElement?.tagName==='INPUT'))return;await new Promise(r=>setTimeout(r,900));location.reload();return true}}catch(e){}finally{verBusy=false}return false}
