@@ -177,6 +177,17 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .vw .noimg{margin:30px 0;font-size:70px}
 .vw .vi{width:100%;max-width:560px;font-size:20px;line-height:1.5}
 .vw .btns{width:100%;max-width:560px}
+/* 시간표 */
+.tta{display:flex;align-items:center;gap:10px;width:100%;margin:4px 0 8px;padding:8px 12px 8px 8px;border-radius:16px;background:#eef6ff;border:2.5px solid #9cc8f0;color:#3a76b0;font-size:20px;text-align:left}
+.tta.none{background:#f7fbff;border-style:dashed;padding:10px 12px}
+.tta .th{width:64px;height:46px;border-radius:9px;flex:none;background:#fff center/cover;box-shadow:0 1px 4px #0002}
+.tta small{display:block;font-size:15px;color:#7a9cbd}
+.ttw{width:100%;max-width:560px;overflow:auto;margin:10px 0;border-radius:12px;box-shadow:0 2px 10px #0002}
+.vw .ttw img{display:block;width:100%;max-width:none;margin:0;border-radius:0;box-shadow:none}
+.vw .ttw.zm img{width:230%}
+.ttn{display:flex;align-items:center;gap:6px;width:100%;max-width:560px;font-size:19px;margin-top:6px}
+.ttn span{flex:1;text-align:center;font-size:16px;white-space:nowrap}
+.ttn button{padding:6px 10px;border-radius:12px;background:#eef6ff;color:#3a76b0;font-size:17px;white-space:nowrap}
 .hide{display:none!important}
 .ptabs{display:flex;gap:6px;margin:0 0 10px}
 .ptabs button{flex:1;padding:9px 0;border-radius:14px;background:#f7efe8;font-size:19px;color:#a08c80}
@@ -239,6 +250,7 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
       <button type="button" class="tg rp" id="rpT" title="매일">🔁매일</button>
       <button class="addb">+</button>
     </form>
+    <button class="tta hide" id="tta"></button>
     <button class="cpa hide" id="cpa"></button>
     <button class="carry hide" id="carry"></button>
     <div class="upc hide" id="upc"></div>
@@ -284,7 +296,8 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.days)r
 let S=load();
 let star=false,rp=false,addPl=null,calYM=null,calSel=null,curDay=today(),VD=today();
 if(!S.coupons)S.coupons=[];
-const dataStr=()=>JSON.stringify({days:S.days,routines:S.routines,coupons:S.coupons});
+if(!S.tt)S.tt=[];
+const dataStr=()=>JSON.stringify({days:S.days,routines:S.routines,coupons:S.coupons,tt:S.tt});
 function save(){const d=dataStr();if(d!==S.lastD){S.lastD=d;S.at=Date.now();queuePush()}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1900)}
 
@@ -345,7 +358,7 @@ function render(){
     li.querySelector('.ck').onclick=()=>toggle(id,li);
     li.querySelector('.t').onclick=()=>toggle(id,li);
     li.querySelector('.more').onclick=e=>{e.stopPropagation();openItem(id)}});
-  renderCpAlert();
+  renderCpAlert();renderTT();
   if(!$('#cal').classList.contains('hide'))renderCal();
   if(!$('#cpn').classList.contains('hide'))renderCp();
 }
@@ -526,6 +539,33 @@ async function openView(id){const c=S.coupons.find(x=>x.id===id);if(!c)return;co
     if(c.used){snd('pop');burst(innerWidth/2,innerHeight*.6,40);praise('알뜰하게 썼어요! 💰')}};
   if(c.img){const im=await getImg(c.img);const el=$('#vimg');if(el&&im)el.src=im;else if(el&&!im)toast('사진을 불러오는 중이에요… 인터넷 확인')}}
 
+/* 주간 시간표 */
+const wkOf=k=>addDays(k,-((pd(k).getDay()+6)%7));
+const ttFor=k=>{const w=wkOf(k);return S.tt.filter(x=>x.wk<=w).sort((a,b)=>a.wk<b.wk?1:-1)[0]||null};
+const wkLbl=w=>`${md(w)}~${md(addDays(w,4))}`;
+function renderTT(){const a=$('#tta'),w=wkOf(VD),t=ttFor(VD),thisW=w===wkOf(today());
+  a.classList.remove('hide');a.classList.toggle('none',!t);
+  a.innerHTML=t?`<span class="th" style="background-image:url(${t.th})"></span><span style="flex:1">📅 ${thisW?'이번 주':md(w)+' 주'} 시간표<small>${t.wk===w?wkLbl(w):'지난 시간표 그대로 · 바꾸려면 눌러요'}</small></span><span style="font-size:17px">크게 ›</span>`
+    :`<span style="font-size:24px">📸</span><span style="flex:1">${thisW?'이번 주':md(w)+' 주'} 시간표 사진 넣기<small>매주 바뀐 시간표를 찍어 넣어요</small></span>`;
+  a.onclick=()=>t?openTT(w):pickTT(w)}
+function pickTT(w){const i=$('#cfile');i.value='';i.onchange=async()=>{const fl=i.files[0];if(!fl)return;toast('📸 시간표 넣는 중…');
+  try{const big=await shrink(fl,1600,.85),th=await shrink(fl,240,.7),nid=uid();
+    if(!await putImg(nid,big))return;
+    const o=S.tt.find(x=>x.wk===w);if(o){delImg(o.img);Object.assign(o,{img:nid,th,at:Date.now()})}else S.tt.push({id:uid(),wk:w,img:nid,th,at:Date.now()});
+    S.tt.sort((a,b)=>a.wk<b.wk?-1:1);while(S.tt.length>12){const x=S.tt.shift();delImg(x.img)}
+    render();snd('add');toast(`📅 ${md(w)} 주 시간표를 넣었어요`);if($('#vw').classList.contains('on'))openTT(w)}catch(e){toast('사진을 못 읽었어요')}};i.click()}
+async function openTT(w){const v=$('#vw'),t=ttFor(w),own=t&&t.wk===w,thisW=w===wkOf(today());
+  v.innerHTML=`<div class="vh"><b>📅 ${thisW?'이번 주':md(w)+' 주'} 시간표</b><button class="ib" id="vx">✕</button></div>
+   <div class="ttn"><button id="tp">◀ 지난주</button><span>${wkLbl(w)}</span><button id="tn">다음 주 ▶</button></div>
+   ${t?`<div class="ttw" id="ttw"><img id="vimg" src="${t.th}" alt=""></div><div class="note" style="width:100%;max-width:560px">👆 사진을 누르면 크게 · 두 손가락으로 늘려도 돼요${own?'':`<br>💡 이 주는 ${md(t.wk)} 주 시간표가 그대로 보여요`}</div>`:'<div class="noimg">📅</div><div class="vi" style="text-align:center">이 주 시간표가 아직 없어요</div>'}
+   <div class="btns">${own?'<button class="del" id="tdl">🗑️ 이 주 사진 빼기</button>':''}<button class="pri" id="tup">📸 ${own?'사진 바꾸기':'이 주 시간표 넣기'}</button></div>`;
+  v.classList.add('on');v.scrollTop=0;
+  $('#vx').onclick=closeView;$('#tp').onclick=()=>openTT(addDays(w,-7));$('#tn').onclick=()=>openTT(addDays(w,7));
+  $('#tup').onclick=()=>pickTT(w);
+  const dl=$('#tdl');if(dl)dl.onclick=()=>{delImg(t.img);S.tt=S.tt.filter(x=>x!==t);render();openTT(w);toast('시간표 사진을 뺐어요')};
+  const tw=$('#ttw');if(tw)tw.onclick=()=>tw.classList.toggle('zm');
+  if(t){const im=await getImg(t.img);const el=$('#vimg');if(el&&im&&el.isConnected)el.src=im;else if(el&&!im)toast('사진을 불러오는 중이에요… 인터넷 확인')}}
+
 /* ---------- 설정 ---------- */
 function openSet(){const draw=()=>{openSheet(`<h3>⚙️ 설정<button class="x">✕</button></h3>
   <div class="lbl">🔁 매일 할 일 <span class="note">(아침마다 저절로 들어가요)</span></div>
@@ -561,7 +601,7 @@ async function push(){try{const r=await fetch(DB+S.code+'.json',{method:'PUT',bo
 async function pull(force){if(!S.code||pulling)return;pulling=true;
   try{const r=await fetch(DB+S.code+'.json?x='+Date.now());if(!r.ok)throw 0;const j=await r.json();
     if(force===true&&(S.at||0)>initAt)force=false;
-    if(j&&j.d&&(force||j.at>(S.at||0))){const d=JSON.parse(j.d);S.days=d.days||{};S.routines=d.routines||[];S.coupons=d.coupons||[];S.lastD=j.d;S.at=j.at;
+    if(j&&j.d&&(force||j.at>(S.at||0))){const d=JSON.parse(j.d);S.days=d.days||{};S.routines=d.routines||[];S.coupons=d.coupons||[];S.tt=d.tt||[];S.lastD=j.d;S.at=j.at;
       try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(!$('#ov').classList.contains('on')&&!$('#vw').classList.contains('on'))render();setCloud('ok');return 'got'}
     if(!j||!j.d||j.at<(S.at||0)){await push();return 'pushed'}
     setCloud('ok')}catch(e){setCloud('off')}finally{pulling=false}}
@@ -581,7 +621,7 @@ function initSync(){const m=location.hash.match(/f=([a-z0-9]{10,16})/);let force
 }
 
 /* ---------- 새 버전 자동 반영 ---------- */
-const APPVER='20261018a';
+const APPVER='20261019a';
 let verBusy=false;
 async function checkVer(auto){if(verBusy)return;verBusy=true;try{const r=await fetch(location.pathname+'?vc='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPVER='([^']+)'/);
   if(m&&m[1]!==APPVER){if(auto&&($('#ov').classList.contains('on')||document.activeElement?.tagName==='INPUT'))return;await new Promise(r=>setTimeout(r,900));location.reload();return true}}catch(e){}finally{verBusy=false}return false}
