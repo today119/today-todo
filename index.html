@@ -218,7 +218,24 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
 .date .d small.wd{font-size:24px;margin-left:3px}
 .date .d{font-size:clamp(28px,8.5vw,38px)}
 /* 머리줄: 1줄=인사+버튼, 2줄=날짜 넘기기 (겹침 방지) */
-.top{display:grid;grid-template-columns:1fr auto auto auto auto;align-items:center;column-gap:6px;row-gap:4px}
+.top{display:grid;grid-template-columns:1fr auto auto auto auto auto;align-items:center;column-gap:5px;row-gap:4px}
+.shp{background:#fff;border-radius:26px;padding:14px;box-shadow:0 4px 14px #ebcfb855;margin-top:18px}
+.shp h2{font-family:'Gamja Flower';font-weight:400;font-size:30px;margin:0 0 8px;display:flex;align-items:center;gap:6px}
+.shp h2 .sn{font-family:Gaegu;font-size:18px;color:var(--sub)}
+.shp h2 .shs{margin-left:auto;font-family:Gaegu;font-weight:700;font-size:18px;padding:6px 12px;border-radius:99px;background:#eaf6ee;color:#3f8a5a}
+.sadd{display:flex;gap:6px;margin-bottom:6px}
+.sadd input{flex:1;min-width:0;font:inherit;font-size:21px;padding:9px 12px;border-radius:16px;border:2px dashed #f0dcc8;background:#fffaf4;outline:none}
+.sadd button{font-family:Gaegu;font-weight:700;font-size:20px;padding:0 15px;border-radius:16px;background:linear-gradient(135deg,#8fd6a6,#5bbd7e);color:#fff}
+.si{display:flex;align-items:center;gap:8px;padding:6px 2px;font-size:22px;min-height:40px}
+.si .sb{width:30px;height:30px;flex:none;border-radius:9px;border:2.5px solid #c9b2a0;background:#fff;display:grid;place-items:center;font-size:19px;color:#fff}
+.si .stx{flex:1;min-width:0;text-align:left;font:inherit;line-height:1.15;word-break:keep-all;overflow-wrap:anywhere}
+.si .sx{font-size:16px;color:#c9b2a0;padding:4px 8px}
+.si.on .sb{background:#5bbd7e;border-color:#5bbd7e}
+.si.on .stx{color:#b9a597;text-decoration:line-through 2.5px #5bbd7e}
+.sfq{margin-top:10px;font-size:17px;color:var(--sub)}
+.sfq .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.sfq .chips button{font-family:Gaegu;font-size:18px;padding:4px 11px;border-radius:99px;background:#fff4e8;border:1.5px solid #f0dcc8}
+.sclr{display:block;width:100%;margin-top:8px;font-family:Gaegu;font-weight:700;font-size:19px;padding:9px;border-radius:16px;background:#f3faf5;color:#3f8a5a;border:2px dashed #b8e0c5}
 .top .date{display:contents}
 .top .date .hi{grid-row:1;grid-column:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .top .date .d{grid-row:2;grid-column:1/-1;gap:10px;margin-top:2px}
@@ -232,6 +249,7 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
   <div class="top">
     <div class="date"><div class="d" id="dTitle"></div><div class="hi" id="hi"></div></div>
     <button class="ib cloud" id="cloud" title="온라인 저장">☁️</button>
+    <button class="ib" id="shBtn" title="장보기">🛒</button>
     <button class="ib" id="cpBtn" title="쿠폰함">🎟️</button>
     <button class="ib" id="calBtn" title="달력">📅</button>
     <button class="ib" id="setBtn" title="설정">⚙️</button>
@@ -257,6 +275,7 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
     <ul id="list"></ul>
   </div>
   <div class="cal hide" id="cal"></div>
+  <div class="shp hide" id="shp"></div>
   <div class="cpn hide" id="cpn"></div>
 </div>
 <div class="clear" id="clear"><div class="fl">🌸</div><h1>오늘 미션 클리어!</h1><p id="clearP"></p><button id="clearB">고마워 🥰</button></div>
@@ -297,7 +316,9 @@ let S=load();
 let star=false,rp=false,addPl=null,calYM=null,calSel=null,curDay=today(),VD=today();
 if(!S.coupons)S.coupons=[];
 if(!S.tt)S.tt=[];
-const dataStr=()=>JSON.stringify({days:S.days,routines:S.routines,coupons:S.coupons,tt:S.tt});
+if(!S.shop)S.shop=[];
+if(!S.shopF)S.shopF={};
+const dataStr=()=>JSON.stringify({days:S.days,routines:S.routines,coupons:S.coupons,tt:S.tt,shop:S.shop,shopF:S.shopF});
 function save(){const d=dataStr();if(d!==S.lastD){S.lastD=d;S.at=Date.now();queuePush()}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1900)}
 
@@ -361,6 +382,7 @@ function render(){
   renderCpAlert();renderTT();
   if(!$('#cal').classList.contains('hide'))renderCal();
   if(!$('#cpn').classList.contains('hide'))renderCp();
+  renderShop();
 }
 function itemHTML(x){const nw=justDone===x.id;
   return `<li data-id="${x.id}" class="${x.done?'done':''} ${x.star?'star':''}"><button class="ck" aria-label="완료">${x.done?'✓':''}</button><span class="ic">${x.ic}</span><span class="t">${x.star?'<span class="st">★</span>':''}${esc(x.t)}${x.r?'<span class="rp">매일</span>':''}${x.done?`<span class="${nw?'draw':''}">${strike()}</span>`:''}</span>${x.done?`<span class="stamp ${nw?'new':''}">${x.stamp||'잘했<br>어요'}</span>`:''}<button class="more" aria-label="고치기"><svg class="er" viewBox="0 0 40 40" aria-hidden="true"><g transform="rotate(-12 20 20)"><rect x="3" y="9" width="34" height="22" rx="7" fill="#ffb3c4" stroke="#7a5a48" stroke-width="2.4"/><path d="M27 9.5v21" stroke="#7a5a48" stroke-width="2.4"/><rect x="27.2" y="10.2" width="8.6" height="19.6" rx="5" fill="#bfe3f5"/><circle cx="10" cy="18.5" r="2.1" fill="#4d3b33"/><circle cx="19.5" cy="18.5" r="2.1" fill="#4d3b33"/><path d="M12.3 22.6q2.5 2.6 5 0" fill="none" stroke="#4d3b33" stroke-width="2" stroke-linecap="round"/><ellipse cx="7.3" cy="23.2" rx="2.4" ry="1.5" fill="#ff5d84" opacity=".55"/><ellipse cx="22.2" cy="23.2" rx="2.4" ry="1.5" fill="#ff5d84" opacity=".55"/></g></svg></button></li>`}
@@ -461,6 +483,40 @@ function renderCal(){const n=new Date();if(!calYM)calYM=[n.getFullYear(),n.getMo
   const gd=$('#goD');if(gd)gd.onclick=()=>{VD=calSel;render();scrollTo({top:0,behavior:'smooth'});setTimeout(()=>$('#addI').focus(),400)};
 }
 
+
+/* ---------- 장보기 ---------- */
+const SKW=[[/우유|요거트|요구르트|치즈|버터/,'🥛'],[/계란|달걀/,'🥚'],[/사과/,'🍎'],[/바나나/,'🍌'],[/귤|오렌지|한라봉/,'🍊'],[/딸기/,'🍓'],[/포도|샤인/,'🍇'],[/수박|참외|멜론/,'🍉'],[/과일|배$|복숭아|키위/,'🍑'],[/고기|돼지|소고기|삼겹|목살|불고기|한우/,'🥩'],[/닭|치킨/,'🍗'],[/생선|고등어|연어|갈치|오징어|새우|멸치/,'🐟'],[/빵|식빵|베이글/,'🍞'],[/쌀|잡곡/,'🍚'],[/라면|국수|우동|파스타/,'🍜'],[/두부/,'🧈'],[/양파|마늘|대파|파$|당근|감자|고구마|호박|오이|배추|양배추|무$|버섯|시금치|콩나물|채소|야채|상추|브로콜리|토마토|파프리카|깻잎/,'🥬'],[/물$|생수|주스|음료|콜라|사이다|커피|차$/,'🧃'],[/과자|초콜릿|아이스크림|젤리|간식/,'🍪'],[/휴지|화장지|키친타올|물티슈/,'🧻'],[/세제|샴푸|린스|비누|치약|칫솔|바디/,'🧴'],[/김$|김치|반찬|햄|소시지|어묵|만두/,'🥟'],[/기름|소금|설탕|간장|된장|고추장|식초|소스|케첩|마요/,'🧂'],[/기저귀|약|밴드/,'💊']];
+const sIcon=t=>{for(const[r,e]of SKW)if(r.test(t))return e;return '🛍️'};
+function shopAdd(txt){const ws=String(txt).split(/[,，\n]+/).map(w=>w.trim()).filter(Boolean);let n=0;
+  ws.forEach(w=>{w=w.slice(0,30);const ex=S.shop.find(x=>x.t===w);if(ex){ex.done=false;return}
+    const f=S.shopF[w];S.shop.push({id:uid(),t:w,ic:f&&f.ic||sIcon(w),done:false,at:Date.now()});n++});
+  return n||ws.length}
+function shopLeft(){return S.shop.filter(x=>!x.done).length}
+function renderShop(){const n=shopLeft(),b=$('#shBtn');b.innerHTML='🛒'+(n?`<span class="bd">${n}</span>`:'');
+  const P=$('#shp');if(P.classList.contains('hide'))return;
+  const old=$('#sIn'),keep=old?old.value:'',foc=old&&document.activeElement===old;
+  const a=S.shop.filter(x=>!x.done).sort((p,q)=>p.at-q.at),d=S.shop.filter(x=>x.done).sort((p,q)=>(p.doneAt||0)-(q.doneAt||0));
+  const have=new Set(S.shop.map(x=>x.t)),fq=Object.entries(S.shopF).filter(([t])=>!have.has(t)).sort((p,q)=>q[1].n-p[1].n||q[1].at-p[1].at).slice(0,14);
+  const row=x=>`<div class="si ${x.done?'on':''}" data-si="${x.id}"><button class="sb" aria-label="담았어요">${x.done?'✓':''}</button><span>${x.ic}</span><button class="stx">${esc(x.t)}</button><button class="sx" data-sx="${x.id}" aria-label="빼기">✕</button></div>`;
+  P.innerHTML=`<h2>🛒 장보기 <span class="sn">${n?n+'개 남음':S.shop.length?'다 샀어요! 🎉':''}</span>${S.shop.length?'<button class="shs" id="sShare">📋 보내기</button>':''}</h2>
+   <form class="sadd" id="sF" autocomplete="off"><input id="sIn" placeholder="살 것 (쉼표로 여러 개)" maxlength="200" enterkeyhint="done"><button>담기</button></form>
+   ${S.shop.length?a.map(row).join('')+d.map(row).join(''):'<div class="empty">우유, 계란, 두부 처럼<br>쉼표로 한 번에 써도 돼요 🛒</div>'}
+   ${d.length?`<button class="sclr" id="sClr">✅ 산 것 ${d.length}개 지우기</button>`:''}
+   ${fq.length?`<div class="sfq">⭐ 자주 사는 것 · 누르면 담겨요<div class="chips">${fq.map(([t,f])=>`<button data-sq="${esc(t)}">${f.ic||sIcon(t)} ${esc(t)}</button>`).join('')}</div></div>`:''}`;
+  const I=$('#sIn');I.value=keep;if(foc)I.focus();
+  $('#sF').onsubmit=e=>{e.preventDefault();if(!I.value.trim())return;shopAdd(I.value);I.value='';save();snd('add');renderShop();$('#sIn').focus()};
+  P.querySelectorAll('[data-si]').forEach(r=>{const x=S.shop.find(y=>y.id===r.dataset.si);
+    const tg=()=>{x.done=!x.done;if(x.done){x.doneAt=Date.now();const f=S.shopF[x.t]||{n:0};S.shopF[x.t]={n:f.n+1,ic:x.ic,at:Date.now()};snd('pop')}
+      else{const f=S.shopF[x.t];if(f&&f.n>1)f.n--;else delete S.shopF[x.t]}
+      save();renderShop();if(!shopLeft())toast('🛒 다 샀어요! 수고했어요 🎉')};
+    r.querySelector('.sb').onclick=tg;r.querySelector('.stx').onclick=tg});
+  P.querySelectorAll('[data-sx]').forEach(b=>b.onclick=()=>{S.shop=S.shop.filter(x=>x.id!==b.dataset.sx);save();renderShop()});
+  P.querySelectorAll('[data-sq]').forEach(b=>b.onclick=()=>{shopAdd(b.dataset.sq);save();snd('add');renderShop()});
+  const c=$('#sClr');if(c)c.onclick=()=>{S.shop=S.shop.filter(x=>!x.done);save();renderShop();toast('산 것을 지웠어요')};
+  const sh=$('#sShare');if(sh)sh.onclick=async()=>{const t='🛒 장보기\n'+a.map(x=>'□ '+x.t).join('\n')+(d.length?'\n'+d.map(x=>'☑ '+x.t).join('\n'):'');
+    try{if(navigator.share){await navigator.share({text:t});return}}catch(e){if(e&&e.name==='AbortError')return}
+    try{await navigator.clipboard.writeText(t);toast('📋 복사했어요! 카톡에 붙여 넣어요')}catch(e){toast('복사가 안 돼요 😢')}}}
+$('#shBtn').onclick=()=>{const P=$('#shp');if(P.classList.contains('hide')){P.classList.remove('hide');renderShop();P.scrollIntoView({behavior:'smooth'});if(!S.shop.length)setTimeout(()=>$('#sIn').focus(),400)}else P.classList.add('hide')};
 
 /* ---------- 쿠폰함 ---------- */
 const IMGDB='https://matchmaker-28187-default-rtdb.asia-southeast1.firebasedatabase.app/today_todo_img/';
@@ -601,7 +657,7 @@ async function push(){try{const r=await fetch(DB+S.code+'.json',{method:'PUT',bo
 async function pull(force){if(!S.code||pulling)return;pulling=true;
   try{const r=await fetch(DB+S.code+'.json?x='+Date.now());if(!r.ok)throw 0;const j=await r.json();
     if(force===true&&(S.at||0)>initAt)force=false;
-    if(j&&j.d&&(force||j.at>(S.at||0))){const d=JSON.parse(j.d);S.days=d.days||{};S.routines=d.routines||[];S.coupons=d.coupons||[];S.tt=d.tt||[];S.lastD=j.d;S.at=j.at;
+    if(j&&j.d&&(force||j.at>(S.at||0))){const d=JSON.parse(j.d);S.days=d.days||{};S.routines=d.routines||[];S.coupons=d.coupons||[];S.tt=d.tt||[];S.shop=d.shop||[];S.shopF=d.shopF||{};S.lastD=j.d;S.at=j.at;
       try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(!$('#ov').classList.contains('on')&&!$('#vw').classList.contains('on'))render();setCloud('ok');return 'got'}
     if(!j||!j.d||j.at<(S.at||0)){await push();return 'pushed'}
     setCloud('ok')}catch(e){setCloud('off')}finally{pulling=false}}
@@ -621,7 +677,7 @@ function initSync(){const m=location.hash.match(/f=([a-z0-9]{10,16})/);let force
 }
 
 /* ---------- 새 버전 자동 반영 ---------- */
-const APPVER='20261019b';
+const APPVER='20261019c';
 let verBusy=false;
 async function checkVer(auto){if(verBusy)return;verBusy=true;try{const r=await fetch(location.pathname+'?vc='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPVER='([^']+)'/);
   if(m&&m[1]!==APPVER){if(auto&&($('#ov').classList.contains('on')||document.activeElement?.tagName==='INPUT'))return;await new Promise(r=>setTimeout(r,900));location.reload();return true}}catch(e){}finally{verBusy=false}return false}
