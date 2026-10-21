@@ -131,6 +131,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .inp:focus{border-color:var(--pink)}
 .icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:4px}
 .icons button{font-size:25px;height:46px;border-radius:12px;background:#f8f1ec;border:2px solid transparent}
+.icg{font-size:15px;color:#b39686;margin:8px 2px 3px}
 .icons button.on{border-color:var(--pink);background:#ffe3ea}
 .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .btns button{flex:1;min-width:120px;padding:12px;border-radius:14px;background:#f6eee8;font-size:19px}
@@ -289,8 +290,15 @@ window.addEventListener('error',e=>{try{const b=document.createElement('div');b.
 const KEY='today_todo_v1';
 const DB='https://matchmaker-28187-default-rtdb.asia-southeast1.firebasedatabase.app/today_todo/';
 const DOW='일월화수목금토';
-const KW=[[/전화|통화|연락/,'📞'],[/문자|카톡|메시지|답장/,'💬'],[/메일|이메일/,'📧'],[/장보|마트|쿠팡|주문|구매|사기/,'🛒'],[/약|병원|치과|소아과|약국/,'💊'],[/빨래|세탁|건조/,'🧺'],[/청소|정리|설거지|분리수거|쓰레기/,'🧹'],[/요리|반찬|밥|저녁|도시락/,'🍳'],[/입금|송금|이체|납부|결제|돈|회비|공과금/,'💰'],[/택배|반품|우체국/,'📦'],[/수업|교재|학습지|수업준비|ppt|PPT/,'📚'],[/채점|평가|성적|생기부|세특/,'✍️'],[/회의|협의|연수/,'🗓️'],[/공문|서류|결재|보고|기안|업무/,'📄'],[/운동|헬스|요가|필라|걷기|산책|줄넘기/,'🏃'],[/물|마시/,'💧'],[/책|독서|읽기/,'📖'],[/학원|숙제|알림장|준비물/,'🎒'],[/아이|연우|연아|아들|딸/,'🧒'],[/생일|선물|케이크/,'🎁'],[/머리|미용|네일/,'💇'],[/차|주유|세차/,'🚗'],[/영어|공부/,'🔤'],[/화분|식물|물주/,'🪴'],[/예약/,'📅'],[/편지|카드|글/,'💌']];
-const ICONS=['📝','⭐','📞','💬','📧','🛒','💊','🧺','🧹','🍳','💰','📦','📚','✍️','🗓️','📄','🏃','💧','📖','🎒','🧒','🎁','💇','🚗','🔤','🪴','📅','💌','☕','🐶','🎨','🎵','💻','🧾','🏫','🌷','🍰','🛁','😴','❤️'];
+const KW=[[/미용실|머리|헤어|커트|컷트|파마|펌|염색|뿌리/,'💇‍♀️'],[/네일|손톱|패디/,'💅'],[/피부과|피부|마사지|경락|왁싱/,'💆‍♀️'],[/치과|스케일링|교정/,'🦷'],[/안과|안경|렌즈|시력/,'👓'],[/예방접종|접종|주사|백신|독감/,'💉'],[/건강검진|검진|검사|피검사|내시경/,'🩺'],[/한의원|한약|침 맞/,'🌿'],[/병원|소아과|이비인후과|내과|정형외과|산부인과|진료|외래|물리치료|입원/,'🏥'],[/약국|(^|\s)약(\s|$)|약 타|영양제|비타민|처방/,'💊'],[/은행|통장|대출|적금|보험/,'🏦'],[/우체국|등기|편지 ?부치/,'📮'],[/택배|반품|배송|교환 ?보내/,'📦'],[/입금|송금|이체|납부|결제|돈|회비|공과금|관리비|세금|카드값/,'💰'],[/영수증|가계부|정산/,'🧾'],[/전화|통화|연락/,'📞'],[/문자|카톡|메시지|답장/,'💬'],[/메일|이메일/,'📧'],[/세탁소|드라이/,'👔'],[/빨래|세탁|건조|개기/,'🧺'],[/분리수거|재활용|음쓰|음식물/,'♻️'],[/청소|정리|설거지|쓰레기|청소기/,'🧹'],[/이불|침대|침구/,'🛏️'],[/수리|고장|as|AS|기사님|설치/,'🔧'],[/요리|반찬|밥|저녁|점심|아침|도시락|찌개/,'🍳'],[/빵|베이커리|케이크/,'🥐'],[/장보|마트|쿠팡|주문|구매|사기|이마트|홈플/,'🛒'],[/옷|쇼핑|백화점|아울렛|신발/,'🛍️'],[/화장품|올리브영|선크림/,'💄'],[/꽃|화분|식물|물주/,'🪴'],[/카페|커피|브런치/,'☕'],[/약속|만나|모임|친구|점심약속/,'🤝'],[/회식|술|맥주|저녁약속/,'🍻'],[/외식|식당|맛집/,'🍽️'],[/영화|공연|뮤지컬|연극|전시/,'🎬'],[/여행|비행기|공항|항공|숙소|호텔|펜션|캠핑/,'✈️'],[/기차|ktx|KTX|srt|SRT|지하철/,'🚆'],[/버스/,'🚌'],[/주유|충전/,'⛽'],[/세차|정비|타이어|엔진오일|차량|자동차/,'🚗'],[/공개수업|참관/,'🏫'],[/수업|교재|학습지|수업준비|ppt|PPT/,'📚'],[/채점|평가|성적|생기부|세특|시험/,'✍️'],[/회의|협의|연수|상담/,'🗓️'],[/공문|서류|결재|보고|기안|업무|출력|프린트|복사/,'📄'],[/컴퓨터|노트북|파일|업데이트/,'💻'],[/핸드폰|휴대폰|폰 |요금제/,'📱'],[/사진|앨범|인화/,'📷'],[/학원|숙제|알림장|준비물|가방/,'🎒'],[/학교|등교|하교|학부모|담임|공개수업|참관/,'🏫'],[/아이|연우|연아|아들|딸|육아/,'🧒'],[/생일|선물|케이크/,'🎁'],[/파티|축하|기념일|결혼|돌잔치/,'🎉'],[/요가|필라/,'🧘‍♀️'],[/수영/,'🏊‍♀️'],[/테니스/,'🎾'],[/자전거/,'🚲'],[/등산|둘레길/,'⛰️'],[/운동|헬스|걷기|산책|줄넘기|달리기/,'🏃‍♀️'],[/피아노|리코더|노래|악기|기타|음악/,'🎵'],[/그림|미술|만들기/,'🎨'],[/물|마시/,'💧'],[/책|독서|읽기|도서관/,'📖'],[/영어|공부|단어/,'🔤'],[/강아지|고양이|산책시키|사료|동물병원/,'🐶'],[/예약/,'📅'],[/편지|카드|글/,'💌'],[/교회|성당|예배|미사/,'⛪'],[/잠|낮잠|일찍 자/,'😴'],[/목욕|샤워|반신욕/,'🛁']];
+const ICONS=[['기본',['📝','⭐','❤️','📌','✅','📅','⏰','💡']],
+ ['집안일',['🧹','🧺','♻️','🍳','🛏️','🔧','🪴','🛒','📦','🧾','💰','👔']],
+ ['병원·건강',['🏥','💊','🦷','👓','💉','🩺','🌿','🐶','😴','🛁','💧']],
+ ['미용·쇼핑',['💇‍♀️','💅','💆‍♀️','💄','🛍️','👗','👟','🥐','🎁','💐']],
+ ['외출·약속',['🤝','☕','🍽️','🍻','🎬','✈️','🚆','🚌','🚗','⛽','🏦','📮','⛪','🎉']],
+ ['아이·학교',['🧒','🎒','🏫','📚','✍️','🔤','📖','🎨','🎵']],
+ ['일·연락',['📞','💬','📧','📄','🗓️','💻','📱','📷','💌']],
+ ['운동',['🏃‍♀️','🧘‍♀️','🏊‍♀️','🎾','🚲','⛰️']]];
 const PRAISE=['참 잘했어요!','멋져요 ✨','하나 해치움!','역시 최고 💕','오늘도 반짝 ⭐','짝짝짝 👏','훌륭해요!','척척 박사 🎓','쓱싹 완료!','기특해요 🥰'];
 const STAMP=['잘했<br>어요','최고','완료!','멋져','굿잡'];
 const PLANT=['🌱','🌱','🌿','🪴','🌷','🌸'];
@@ -417,7 +425,7 @@ function openItem(id){const L=dayList(VD);const x=L.find(y=>y.id===id);if(!x)ret
   let ic=x.ic;
   const draw=()=>{openSheet(`<h3>✏️ 할 일 고치기<button class="x">✕</button></h3>
     <input class="inp" id="et" value="${esc(x.t)}" maxlength="60">
-    <div class="lbl">아이콘</div><div class="icons">${ICONS.map(e=>`<button class="${ic===e?'on':''}" data-ic="${e}">${e}</button>`).join('')}</div>
+    <div class="lbl">아이콘</div>${ICONS.map(([g,es])=>`<div class="icg">${g}</div><div class="icons">${es.map(e=>`<button class="${ic===e?'on':''}" data-ic="${e}">${e}</button>`).join('')}</div>`).join('')}
     <div class="lbl">어디서 할 일?</div><div class="btns" style="margin-top:0">${['home','work'].map(k=>`<button class="${plOf(x)===k?'pri':''}" data-pl="${k}">${PL[k].join(' ')}</button>`).join('')}</div>
     <div class="btns"><button id="es">${x.star?'☆ 꼭! 빼기':'⭐ 꼭! 표시'}</button>${x.r?'':'<button id="em">🌙 다음 날로</button>'}</div>
     ${x.r?'':`<div class="lbl">📅 다른 날로 옮기기</div><div style="display:flex;gap:6px"><input type="date" class="inp" id="mvd" value="${addDays(VD,1)}"><button class="tg on" id="mvb" style="height:auto;font-size:18px">옮기기</button></div>`}
@@ -677,7 +685,7 @@ function initSync(){const m=location.hash.match(/f=([a-z0-9]{10,16})/);let force
 }
 
 /* ---------- 새 버전 자동 반영 ---------- */
-const APPVER='20261019c';
+const APPVER='20261021a';
 let verBusy=false;
 async function checkVer(auto){if(verBusy)return;verBusy=true;try{const r=await fetch(location.pathname+'?vc='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPVER='([^']+)'/);
   if(m&&m[1]!==APPVER){if(auto&&($('#ov').classList.contains('on')||document.activeElement?.tagName==='INPUT'))return;await new Promise(r=>setTimeout(r,900));location.reload();return true}}catch(e){}finally{verBusy=false}return false}
