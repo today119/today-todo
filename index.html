@@ -242,6 +242,34 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
 .top .date .d{grid-row:2;grid-column:1/-1;gap:10px;margin-top:2px}
 .top .nv{height:42px;min-width:46px;border-radius:14px;font-size:19px}
 .top .nv.tdb{height:36px;min-width:0;font-size:17px;border-radius:12px;margin-left:auto;font-family:Gaegu}
+
+/* 🧭 오늘 순서(동선) */
+.rt{margin-top:16px;background:#fffdf6;border-radius:22px;padding:16px 14px 14px;box-shadow:0 8px 22px #e3c3a344;border:2.5px solid #cfe6c4}
+.rt h3{font-family:'Gamja Flower';font-weight:400;font-size:27px;margin:0;display:flex;align-items:center;gap:6px}
+.rt h3 .rtb{margin-left:auto;font-family:'Gaegu';font-weight:700;font-size:17px;padding:6px 12px;border-radius:99px;background:#eaf6e4;color:#4f8f3a}
+.rt h3 .rtb.on{background:#4f8f3a;color:#fff}
+.rt .rsub{font-size:16px;color:var(--sub);margin:2px 0 8px}
+.rt ol{list-style:none;margin:0;padding:0}
+.rt li{position:relative;display:flex;align-items:center;gap:8px;padding:6px 0 6px 0;min-height:56px}
+.rt li:not(:last-child)::after{content:'';position:absolute;left:21px;top:46px;bottom:-12px;border-left:3px dashed #b9dcae;z-index:0}
+.rt .no{position:relative;z-index:1;flex:none;width:44px;height:44px;border-radius:50%;background:#7cc46a;color:#fff;font-family:'Gamja Flower';font-size:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 #4f8f3a}
+.rt li.done .no{background:#d9d2cb;box-shadow:none;font-size:24px}
+.rt li.now .no{background:#ff7898;box-shadow:0 0 0 5px #ffd3dd}
+.rt .rtx{flex:1;min-width:0;display:flex;align-items:center;gap:6px;text-align:left;font-size:21px;line-height:1.25;padding:4px 0}
+.rt .rtx .ic{font-size:24px}
+.rt li.done .rtx{color:#b8aaa0;text-decoration:line-through;text-decoration-color:#ff8fab}
+.rt .nowt{flex:none;font-size:14px;background:#ff7898;color:#fff;border-radius:99px;padding:1px 8px}
+.rt .pls{font-size:15px;opacity:.75}
+.rt .tm{flex:none;min-width:62px;padding:5px 8px;border-radius:12px;background:#f3f8ff;color:#3a76b0;font-size:17px;border:2px dashed #b9d6f0}
+.rt .tm.has{background:#e3f0ff;border-style:solid;font-weight:700}
+.rt .mv{flex:none;display:flex;gap:4px}
+.rt .mv button{width:44px;height:44px;border-radius:12px;background:#eaf6e4;color:#4f8f3a;font-size:20px}
+.rt .mv button:disabled{opacity:.3}
+.rt.ed .tm,.rt.ed .nowt{display:none}
+.rt.ed .mv button{width:42px;height:42px}
+.rt .rtf{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.rt .rtf button{padding:7px 12px;border-radius:99px;background:#f3f8ff;color:#3a76b0;font-size:17px}
+.rt .rte{text-align:center;color:var(--sub);padding:8px 0;font-size:18px}
 </style>
 </head>
 <body>
@@ -275,6 +303,7 @@ body.other .paper::before{background:repeating-linear-gradient(90deg,#b9dcffcc 0
     <div class="upc hide" id="upc"></div>
     <ul id="list"></ul>
   </div>
+  <div class="rt hide" id="rt"></div>
   <div class="cal hide" id="cal"></div>
   <div class="shp hide" id="shp"></div>
   <div class="cpn hide" id="cpn"></div>
@@ -387,7 +416,7 @@ function render(){
     li.querySelector('.ck').onclick=()=>toggle(id,li);
     li.querySelector('.t').onclick=()=>toggle(id,li);
     li.querySelector('.more').onclick=e=>{e.stopPropagation();openItem(id)}});
-  renderCpAlert();renderTT();
+  renderCpAlert();renderTT();renderRt();
   if(!$('#cal').classList.contains('hide'))renderCal();
   if(!$('#cpn').classList.contains('hide'))renderCp();
   renderShop();
@@ -442,6 +471,37 @@ function openItem(id){const L=dayList(VD);const x=L.find(y=>y.id===id);if(!x)ret
   };draw();
 }
 
+
+/* ---------- 🧭 오늘 순서(동선) ---------- */
+let rtEdit=false;
+function rtList(L){return L.map((x,i)=>[x,i]).sort((a,b)=>((a[0].o??a[1]+1e3)-(b[0].o??b[1]+1e3))).map(a=>a[0])}
+function rtRenum(R){R.forEach((x,i)=>x.o=i)}
+function renderRt(){const box=$('#rt'),L=dayList(VD);box.classList.toggle('ed',rtEdit);
+  if(!L.length){box.classList.add('hide');return}box.classList.remove('hide');
+  const R=rtList(L),isT=VD===today(),nowId=isT?(R.find(x=>!x.done)||{}).id:null,hasTm=R.filter(x=>x.tm).length;
+  box.innerHTML=`<h3>🧭 ${isT?'오늘':md(VD)} 순서 <button class="rtb ${rtEdit?'on':''}" id="rtE">${rtEdit?'✔ 다 바꿨어요':'↕️ 순서 바꾸기'}</button></h3>
+  <div class="rsub">${rtEdit?'▲ ▼ 를 눌러 순서를 바꿔요':'할 일 · 갈 곳을 차례대로 · 동그라미를 누르면 완료'}</div>
+  <ol>${R.map((x,i)=>`<li data-id="${x.id}" class="${x.done?'done':''} ${x.id===nowId?'now':''}">
+    <button class="no ck" aria-label="완료">${x.done?'✓':i+1}</button>
+    <button class="tm ${x.tm?'has':''}" data-tm="${x.id}">${x.tm?'⏰ '+x.tm:'⏰ 시간'}</button>
+    <span class="rtx"><span class="ic">${x.ic}</span><span>${esc(x.t)} <span class="pls">${PL[plOf(x)][0]}</span></span>${x.id===nowId?'<span class="nowt">지금</span>':''}</span>
+    ${rtEdit?`<span class="mv"><button data-up="${i}" ${i?'':'disabled'} aria-label="위로">▲</button><button data-dn="${i}" ${i<R.length-1?'':'disabled'} aria-label="아래로">▼</button></span>`:''}
+  </li>`).join('')}</ol>
+  ${hasTm>=2||rtEdit?`<div class="rtf">${hasTm>=2?'<button id="rtS">⏰ 시간 순서대로 정렬</button>':''}${rtEdit?'<button id="rtD">🧹 시간 다 지우기</button>':''}</div>`:''}`;
+  $('#rtE').onclick=()=>{rtEdit=!rtEdit;renderRt()};
+  box.querySelectorAll('li').forEach(li=>{li.querySelector('.ck').onclick=()=>toggle(li.dataset.id,li)});
+  box.querySelectorAll('[data-up],[data-dn]').forEach(b=>b.onclick=()=>{const i=+(b.dataset.up??b.dataset.dn),j=b.dataset.up!=null?i-1:i+1;if(j<0||j>=R.length)return;[R[i],R[j]]=[R[j],R[i]];rtRenum(R);snd('add');save();renderRt()});
+  box.querySelectorAll('[data-tm]').forEach(b=>b.onclick=()=>rtTime(b.dataset.tm));
+  const rs=$('#rtS');if(rs)rs.onclick=()=>{const a=R.filter(x=>x.tm).sort((p,q)=>p.tm<q.tm?-1:1);let k=0;const out=R.map(x=>x.tm?a[k++]:x);rtRenum(out);toast('⏰ 시간 순서로 맞췄어요');save();renderRt()};
+  const rd=$('#rtD');if(rd)rd.onclick=()=>{R.forEach(x=>delete x.tm);save();renderRt()};
+}
+function rtTime(id){const x=dayList(VD).find(y=>y.id===id);if(!x)return;
+  openSheet(`<h3>⏰ 몇 시에?<button class="x">✕</button></h3><p class="note" style="margin:0 0 8px">${x.ic} ${esc(x.t)}</p>
+  <input type="time" class="inp" id="rtt" value="${x.tm||''}" style="font-size:26px">
+  <div class="btns"><button class="del" id="rtn">시간 빼기</button><button class="pri" id="rty">저장</button></div>`);
+  $('#rty').onclick=()=>{const v=$('#rtt').value;if(v)x.tm=v;else delete x.tm;closeSheet();save();renderRt()};
+  $('#rtn').onclick=()=>{delete x.tm;closeSheet();save();renderRt()};
+}
 /* ---------- 효과 ---------- */
 let AC=null;
 function snd(k){if(!S.sound)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;
@@ -685,7 +745,7 @@ function initSync(){const m=location.hash.match(/f=([a-z0-9]{10,16})/);let force
 }
 
 /* ---------- 새 버전 자동 반영 ---------- */
-const APPVER='20261021a';
+const APPVER='20261028a';
 let verBusy=false;
 async function checkVer(auto){if(verBusy)return;verBusy=true;try{const r=await fetch(location.pathname+'?vc='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPVER='([^']+)'/);
   if(m&&m[1]!==APPVER){if(auto&&($('#ov').classList.contains('on')||document.activeElement?.tagName==='INPUT'))return;await new Promise(r=>setTimeout(r,900));location.reload();return true}}catch(e){}finally{verBusy=false}return false}
